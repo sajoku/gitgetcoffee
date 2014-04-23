@@ -5,4 +5,9 @@ describe  'MainController' do
     controller.title.should.equal("GitGetCoffee")
   end
 
+  it 'adds a user' do
+    tap controller.navigationItem.rightBarButtonItem
+
+    view('Add a user').should.not == nil
+  end
 end
