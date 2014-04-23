@@ -5,7 +5,4 @@ describe  'MainController' do
     controller.title.should.equal("GitGetCoffee")
   end
 
-  it 'taps the plus button' do
-  end
-
 end

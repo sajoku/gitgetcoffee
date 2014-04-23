@@ -7,6 +7,7 @@ gem 'motion-cocoapods'
 gem 'sugarcube'
 gem 'bubble-wrap'
 gem 'afmotion'
+gem 'motion_model'
 
 group :development do
   gem 'guard-motion'

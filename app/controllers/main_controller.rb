@@ -1,4 +1,4 @@
-class MainController < UITableViewController
+class MainController < UIViewController
   include MainView
 
   def viewDidLoad
