@@ -1,5 +1,6 @@
+include SugarCube::Adjust
+
 class AppDelegate
-  include SugarCube::Adjust
   attr_reader :root_controller
   def application(application, didFinishLaunchingWithOptions:launchOptions)
     @client = AFMotion::SessionClient.build_shared("https://api.github.com") do
@@ -7,6 +8,9 @@ class AppDelegate
       header "Accept", "application/json"
       response_serializer :json
     end
+
+    T7.change_language('en') #Set the default language to english
+
 
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
     @root_controller = UINavigationController.alloc.initWithRootViewController(main_controller)

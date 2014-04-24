@@ -8,6 +8,7 @@ class User
     avatar_url: :string,
     html_url: :string,
     followers_url: :string,
+    followers: :integer,
     folowing_url: :string
 
   #validates :name, :presence => true

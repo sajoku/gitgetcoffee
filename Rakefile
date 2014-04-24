@@ -17,4 +17,7 @@ Motion::Project::App.setup do |app|
   app.frameworks += ["Foundation"]
 
   app.deployment_target = "7.0"
+  app.pods do
+    pod 'FlatUIKit'
+  end
 end
