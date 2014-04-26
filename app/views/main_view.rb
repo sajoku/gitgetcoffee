@@ -49,6 +49,6 @@ module MainView
 
 
   def user_avatar_image
-    @user_avatar_image ||= UIImage.imageNamed("moss2_1x.png")
+    @user_avatar_image ||= UIImage.imageNamed("Untitled.png")
   end
 end
