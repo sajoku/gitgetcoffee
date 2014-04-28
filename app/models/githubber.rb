@@ -8,7 +8,7 @@ class Githubber
     avatar_url: :string,
     html_url: :string,
     followers_url: :string,
-    folowing_url: :string
+    following_url: :string
 
   #validates :name, :presence => true
 

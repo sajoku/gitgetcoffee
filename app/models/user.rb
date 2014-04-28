@@ -9,7 +9,7 @@ class User
     html_url: :string,
     followers_url: :string,
     followers: :integer,
-    folowing_url: :string
+    following_url: :string
 
   #validates :name, :presence => true
 
