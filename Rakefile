@@ -13,7 +13,7 @@ end
 
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
-  app.name = "gitgetcoffee"
+  app.name = "Github - Social"
   app.frameworks += ["Foundation"]
 
   app.deployment_target = "7.0"
