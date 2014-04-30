@@ -83,6 +83,7 @@ GEM
     sugarcube (1.5.4)
     thor (0.18.1)
     timers (1.1.0)
+    webstub (1.0.1)
     xcodeproj (0.16.1)
       activesupport (~> 3.0)
       colored (~> 1.2)
@@ -100,3 +101,4 @@ DEPENDENCIES
   rake
   rb-fsevent
   sugarcube
+  webstub

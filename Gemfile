@@ -13,4 +13,5 @@ gem 'formotion'
 group :development do
   gem 'guard-motion'
   gem 'rb-fsevent', :require => false
+  gem 'webstub'
 end
