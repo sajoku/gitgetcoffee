@@ -62,6 +62,7 @@ GEM
     motion-cocoapods (1.4.1)
       cocoapods (>= 0.32.1)
     motion-require (0.2.0)
+    motion-stump (0.3.0)
     motion-support (0.2.6)
       motion-require (>= 0.0.6)
     motion_model (0.5.1)
@@ -97,6 +98,7 @@ DEPENDENCIES
   formotion
   guard-motion
   motion-cocoapods
+  motion-stump
   motion_model
   rake
   rb-fsevent

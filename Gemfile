@@ -14,4 +14,5 @@ group :development do
   gem 'guard-motion'
   gem 'rb-fsevent', :require => false
   gem 'webstub'
+  gem 'motion-stump'
 end
