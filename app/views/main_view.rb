@@ -41,7 +41,6 @@ module MainView
   def create_username_label
     username_label.color = UIColor.turquoiseColor
     username_label.center = CGPointMake(App.bounds.size.width / 2, 170)
-    username_label.text = "Moss"
     username_label.sizeToFit
     self.view.addSubview(username_label)
   end
@@ -65,7 +64,7 @@ module MainView
 
 
   def user_avatar_image
-    @user_avatar_image ||= UIImage.imageNamed("Untitled.png")
+    @user_avatar_image ||= UIImage.imageNamed("test.png")
   end
 
 end

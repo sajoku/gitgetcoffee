@@ -1,30 +1,39 @@
 class MainController < UIViewController
   include MainView
+  include MainControllerTableViewDelegate
 
-  attr_accessor :user, :label, :followers, :following, :repos, :followers_not_following
+  attr_accessor :user, :label, :followers, :following, :repos
 
   def viewDidLoad
     super
-
-    add_view_elements
-
-    self.title = T7.t("Github - Social")
+    self.title = T7.t("Github - Experiment")
     self.view.backgroundColor = UIColor.whiteColor
 
-    add_followers_not_following_table
+    add_view_elements
+    add_followers_table_user
+    add_following_table_user
+    add_followers_table_button
+
+    following_table_user.hidden = true
 
     true
   end
 
   def viewWillAppear(animated)
-    @followers_not_following = []
-    followers_not_following_table.reloadData
+    @followers = []
+    @following = []
+    followers_table_user.reloadData
+    following_table_user.reloadData
 
-    if @user
+    if user
       set_user
       get_followers
       get_following
     end
+  end
+
+  def user
+    @user || Guest.new
   end
 
   def add_user(sender)
@@ -34,95 +43,103 @@ class MainController < UIViewController
   end
 
   def set_user
-    username_label.text = @user.name
+    username_label.text = user.name
     username_label.sizeToFit
 
     follower_message = T7.t("Has #followers# followers")
-    followers_label.text = T7.e(follower_message, followers: @user.followers.to_s)
+    followers_label.text = T7.e(follower_message, followers: user.followers.to_s)
     followers_label.sizeToFit
 
-    avatar_data = NSData.alloc.initWithContentsOfURL(NSURL.URLWithString(@user.avatar_url))
-    image = UIImage.alloc.initWithData(avatar_data)
-    user_avatar.image = image
+    set_user_avatar
+  end
 
+  def set_user_avatar
+    user_avatar.image = user.avatar_image
   end
 
   def get_followers
-    AFMotion::SessionClient.shared.get(@user.followers_url) do |result|
-      if result.success?
-        @followers = []
-        result.object.each do |follower_json|
-          follower =  Githubber.new(follower_json)
-          @followers << follower
-        end
-      end
+    Web.get_followers_for_user(user) do |followers|
+      @followers = followers
+      followers_table_user.reloadData
+      followers_table_user.stopRefreshAnimation
     end
   end
 
   def get_following
-    following_url = @user.following_url.split("{").first
-    AFMotion::SessionClient.shared.get(following_url) do |result|
-      if result.success?
-        @following = []
-
-        result.object.each do |following_json|
-          following =  Githubber.new(following_json)
-          @following << following
-        end
-
-        sift_followers_from_following
-      end
+    Web.get_followings_for_user(user) do |following|
+      @following = following
+      following_table_user.reloadData
+      following_table_user.stopRefreshAnimation
     end
   end
 
-  def sift_followers_from_following
+  def following_table_user
+    @following_table_user ||= UITableView.alloc.initWithFrame([[0.0, 300.0], [320.0, 240.0]])
+  end
 
-    follower_ids = @followers.map(&:id)
-    following_ids = @following.map(&:id)
+  def add_following_table_user
+    following_table_user.backgroundView = nil
+    following_table_user.backgroundColor = UIColor.turquoiseColor
+    following_table_user.dataSource = self
+    following_table_user.delegate = self
 
-    following_ids.delete_if{|id| follower_ids.include?(id) }
-    following_names = []
-    @following.each do |follower|
-      if following_ids.include?(follower.id)
-        @followers_not_following << follower
-      end
+    following_table_user.addPullToRefreshActionHandler(Proc.new{update_followers_table_user},
+                                                                ProgressImagesGifName: "spinner_dropbox@2x.gif",
+                                                                LoadingImagesGifName: "run@2x.gif",
+                                                                ProgressScrollThreshold: 60,
+                                                                LoadingImageFrameRate: 30)
+
+    self.view.addSubview(following_table_user)
+  end
+
+  def followers_table_user
+    @followers_table_user ||= UITableView.alloc.initWithFrame([[0.0, 300.0], [320.0, 240.0]])
+  end
+
+  def add_followers_table_user
+    followers_table_user.backgroundView = nil
+    followers_table_user.backgroundColor = UIColor.turquoiseColor
+    followers_table_user.dataSource = self
+    followers_table_user.delegate = self
+
+    followers_table_user.addPullToRefreshActionHandler(Proc.new{update_followers_table_user},
+                                                                ProgressImagesGifName: "spinner_dropbox@2x.gif",
+                                                                LoadingImagesGifName: "run@2x.gif",
+                                                                ProgressScrollThreshold: 60,
+                                                                LoadingImageFrameRate: 30)
+
+    self.view.addSubview(followers_table_user)
+  end
+
+  def update_followers_table_user
+    get_followers
+    get_following
+
+    if @followers.count == 0
+      followers_table_user.stopRefreshAnimation
     end
-    followers_not_following_table.reloadData
   end
 
-  def followers_not_following_table
-    @followers_not_following_table ||= UITableView.alloc.initWithFrame([[0.0, 300.0], [320.0, 240.0]])
+  def add_followers_table_button
+    button = FUIButton.buttonWithType(UIButtonTypeCustom)
+    button.frame = [[10.0, 250.0], [100.0, 45.0]]
+    button.buttonColor = UIColor.turquoiseColor
+    button.shadowColor = UIColor.greenSeaColor
+    button.shadowHeight = 3.0
+    button.cornerRadius = 6.0
+    button.titleLabel.font = UIFont.boldFlatFontOfSize(16)
+    button.setTitleColor(UIColor.cloudsColor, forState: UIControlStateNormal)
+    button.setTitleColor(UIColor.cloudsColor, forState: UIControlStateHighlighted)
+    button.setTitle("followers", forState: UIControlStateNormal)
+
+    button.addTarget(self, action: "toggle_followers:", forControlEvents:  UIControlEventTouchUpInside)
+
+    self.view.addSubview(button)
   end
 
-  def add_followers_not_following_table
-    followers_not_following_table.backgroundView = nil
-    followers_not_following_table.backgroundColor = UIColor.turquoiseColor
-    followers_not_following_table.dataSource = self
-    followers_not_following_table.delegate = self
-    self.view.addSubview(followers_not_following_table)
+  def toggle_followers(sender)
+    following_table_user.hidden = !following_table_user.hidden?
+    followers_table_user.hidden = !followers_table_user.hidden?
   end
-
-  def tableView(tableView, cellForRowAtIndexPath: indexPath)
-    @reuseIdentifier ||= "CELL_IDENTIFIER"
-
-    cell = tableView.dequeueReusableCellWithIdentifier(@reuseIdentifier)
-
-    unless cell
-      cell = UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:@reuseIdentifier)
-      cell.selectionStyle = UITableViewCellSelectionStyleNone
-    end
-
-    follower = @followers_not_following[indexPath.row]
-    if follower
-      cell.textLabel.text = follower.login.to_s
-    end
-
-    cell
-  end
-
-  def tableView(tableView, numberOfRowsInSection: section)
-    @followers_not_following.count || 0
-  end
-
 
 end

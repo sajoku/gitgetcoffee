@@ -10,5 +10,11 @@ describe "User" do
     user.should.respond_to :name
   end
 
+  it "has a repos url" do
+    user = User.new
+    user.should.respond_to :repos_url
+  end
+
+
 end
 

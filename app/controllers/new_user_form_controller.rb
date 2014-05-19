@@ -43,7 +43,6 @@ class NewUserFormController < Formotion::FormController
     data = self.form.render
     AFMotion::SessionClient.shared.get("users/#{data['username']}") do |result|
       if result.success?
-        puts result.object.to_s
         user = User.new(result.object)
         @parent.user = user
         self.navigationController.popToRootViewControllerAnimated(true)
