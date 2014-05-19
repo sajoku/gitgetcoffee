@@ -1,4 +1,2 @@
-Checkout who's following you, who you are following and diff it.
-curl -i https://api.github.com/users/sajoku
-curl -i https://api.github.com/users/sajoku/followers
-curl -i https://api.github.com/users/sajoku/following
+### Just an experiment to checkout RubyMotion and gems
+* This is just some experimental code to show how you could setup an app
