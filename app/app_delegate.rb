@@ -3,12 +3,8 @@ include SugarCube::Adjust
 class AppDelegate
   attr_reader :root_controller
   def application(application, didFinishLaunchingWithOptions:launchOptions)
-    @client = AFMotion::SessionClient.build_shared("https://api.github.com") do
-      session_configuration :default
-      header "Accept", "application/json"
-      response_serializer :json
-    end
 
+    Web.create_client
     T7.change_language('en') #Set the default language to english
 
 
